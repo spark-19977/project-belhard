@@ -1,0 +1,30 @@
+{% load static %}
+<script src="{% static 'js/scripts.js' %}"></script>
+<section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{product.image.url}}" alt="..." height="700" width="600"/></div>
+                    <div class="col-md-6">
+                        <div class="small mb-1">SKU: {{product.pk}}</div>
+                        <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+                        <div class="fs-5 mb-5">
+                            <span class="text-decoration-line-through">100</span>
+                            <span>${{product.price}}</span>
+                        </div>
+                        <p class="lead">{{product.descr | linebreaks}}</p>
+                        <p class="quantity"><b>Quantity</b>: {{product.amount}}</p>
+                        <div class="d-flex">
+                            <form action="{% url 'cart:add_cart' product.id %}" method="post">
+                                {% csrf_token %}
+                                {{add_product_form.quantity}}
+                                {{add_product_form.override}}
+                            <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to cart
+                            </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>

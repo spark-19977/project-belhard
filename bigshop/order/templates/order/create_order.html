@@ -1,0 +1,49 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} Home page {% endblock %}
+
+
+{%block content%}
+<!-- Navigation-->
+{% include 'shop/elements/navigation.html' %}
+<!-- Header-->
+
+<!-- Section-->
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="order">
+</form>
+
+<table class="cart" style="margin-top:25px">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Unit price</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart %}
+        {% with product=item.product %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ item.quantity }}
+            </td>
+            <td class="num">${{ item.price }}</td>
+            <td class="num">${{ item.total_price }}</td>
+          </tr>
+        {% endwith %}
+      {% endfor %}
+      <tr class="total">
+        <td>Total</td>
+        <td colspan="2"></td>
+        <td class="num">${{ cart.get_total_price }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- Footer-->
+
+{% endblock %}

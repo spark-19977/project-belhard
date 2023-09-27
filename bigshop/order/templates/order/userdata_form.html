@@ -1,0 +1,20 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} Home page {% endblock %}
+
+
+{%block content%}
+<!-- Navigation-->
+{% include 'shop/elements/navigation.html' %}
+<!-- Header-->
+
+<!-- Section-->
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="change">
+</form>
+
+<!-- Footer-->
+
+{% endblock %}

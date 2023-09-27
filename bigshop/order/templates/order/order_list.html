@@ -1,0 +1,34 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} Home page {% endblock %}
+
+
+{%block content%}
+<!-- Navigation-->
+{% include 'shop/elements/navigation.html' %}
+<!-- Header-->
+
+<!-- Section-->
+
+<table class="cart" style="margin-top:25px">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in orders %}
+          <tr>
+            <td>{{ item.pk }}</td>
+            <td class="num">${{ item.get_total_cost }}</td>
+            <td class="num">{{ item.status }}</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+<!-- Footer-->
+
+{% endblock %}

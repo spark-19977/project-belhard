@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} {{ product.name }} {% endblock %}
+
+
+{%block content%}
+<!-- Navigation-->
+{% include 'shop/elements/navigation.html' %}
+
+<!-- Section-->
+
+        <!-- Product section-->
+        {% include 'cart/elements/cart_detail.html' %}
+<!-- Footer-->
+
+{% endblock %}
