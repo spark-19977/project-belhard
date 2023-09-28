@@ -37,5 +37,5 @@ class Product(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(get_user_model(), models.CASCADE)
-    product = models.ForeignKey('product', models.CASCADE)
+    product = models.ForeignKey('product', models.DO_NOTHING)
     amount = models.SmallIntegerField()

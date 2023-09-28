@@ -2,21 +2,24 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet, ViewSet, GenericViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .serializers import ProductSerializer, Product, OrderForm
+from .serializers import ProductSerializer, Product, OrderForm, Category, CategorySerializer
 from rest_framework.filters import BaseFilterBackend
 
 from order.models import UserData, OrderItem, UserOrder
 
 
-class ProductViewSet(ModelViewSet):
-    http_method_names = ['get']
-    serializer_class = ProductSerializer
+class ProductList(ListCreateAPIView):
     queryset = Product.objects.all()
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    serializer_class = ProductSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
 
     def filter_queryset(self, queryset):
         category_id = self.request.query_params.get('category_id')
@@ -25,11 +28,42 @@ class ProductViewSet(ModelViewSet):
         return queryset
 
 
+class ProductDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class CategoryList(ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+# class ProductViewSet(ModelViewSet):
+#     http_method_names = ['get']
+#     serializer_class = ProductSerializer
+#     queryset = Product.objects.all()
+#     # authentication_classes = [JWTAuthentication]
+#     # permission_classes = [IsAuthenticated]
+#
+#     def filter_queryset(self, queryset):
+#         category_id = self.request.query_params.get('category_id')
+#         if category_id:
+#             return queryset.filter(category_id=category_id)
+#         return queryset
+
+
 class Order(APIView):
     serializer_class = OrderForm
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = OrderForm(data=request.data)
         if serializer.is_valid():
@@ -60,6 +94,6 @@ class Order(APIView):
                     quantity=1
                 )
 
-            return Response({'order_id':order.id}, status=201)
+            return Response({'order_id': order.id}, status=201)
 
         return Response(serializer.errors, status=400)

@@ -88,5 +88,5 @@ class CategoryDetailView(ListView):
 
     def get_queryset(self):
         category = get_object_or_404(Category, slug=self.kwargs['slug'])
-        queryset = Product.objects.filter(category=category)
+        queryset = Product.objects.filter(category=category).order_by(['pk'])
         return queryset
