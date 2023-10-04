@@ -7,10 +7,12 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn bigshop.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
-    expose:
-      - 8000
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - 8000:8000
+    restart:
+      "always"
     env_file:
       - ./.env
     depends_on:
@@ -22,13 +24,13 @@ services:
       dockerfile: Dockerfile.celery
     command: celery -A bigshop worker
     volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
+      - static_volume:/app/static
+      - media_volume:/app/media
     environment:
       - CELERY_BROKER=${CELERY_BROKER}
       - CELERY_BACKEND=${CELERY_BACKEND}
-    expose:
-      - 8000
+    restart:
+      "always"
     env_file:
       - ./.env
     depends_on:
@@ -46,17 +48,21 @@ services:
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
       - POSTGRES_DB=${SQL_DATABASE}
+    restart:
+      "always"
 
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
+      - static_volume:/app/static
+      - media_volume:/app/media
 
     ports:
       - 80:80
     depends_on:
       - web
+    restart:
+      "always"
 
 volumes:
   postgres_data:
