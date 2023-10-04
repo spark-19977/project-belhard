@@ -14,13 +14,15 @@ class MyOrders(ListView):
     template_name = 'order/order_list.html'
     paginate_by = 10
     context_object_name = 'orders'
+    queryset = UserOrder.objects
 
     def get_queryset(self):
-        return UserOrder.objects.filter(user=self.request.user).order_by('-updated')
+        return self.queryset.filter(user=self.request.user).order_by('-updated')
 
 # Create your views here.
 class ProfileInfo(UpdateView):
     fields = '__all__'
+    form_class = OrderForm
 
     def get_success_url(self):
         return reverse('shop:index')
@@ -31,8 +33,6 @@ class ProfileInfo(UpdateView):
         except Exception as err:
             user_data = UserData()
         return user_data
-    def get_form_class(self):
-        return OrderForm
 
 
 
